@@ -1,38 +1,39 @@
 <template>
-  <div>
+  <div style="height:100vh">
+    <!-- 添加计算按钮 -->
+    <el-button type="primary" @click="calculateMetrics">计算评估指标</el-button>
     <el-tabs v-model="activeTab">
       <el-tab-pane label="外规" name="outerRules">
-        <!-- 添加计算按钮 -->
-        <el-button type="primary" @click="calculateMetrics">计算选中外规的评估指标</el-button>
-
         <el-row>
           <el-col :span="16">
-            <el-table :data="outerRulesData" style="width: 100%" stripe @selection-change="handleSelectionChange">
-              <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column prop="id" label="ID"></el-table-column>
-              <el-table-column prop="title" label="外规标题"></el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-button @click="openSimilarRulesDialog(scope.row)">计算相似内规</el-button>
-                  <el-button @click="viewOuterRule(scope.row)">查看</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <div class="content-container">
+              <el-table :data="outerRulesData" style="width: 100%" stripe @selection-change="handleSelectionChange">
+                <!--<el-table-column type="selection" width="55"></el-table-column>-->
+                <el-table-column prop="id" label="ID" min-width="10%"></el-table-column>
+                <el-table-column prop="title" label="外规标题" min-width="60%"></el-table-column>
+                <el-table-column label="操作" min-width="30%">
+                  <template slot-scope="scope">
+                    <el-button @click="openSimilarRulesDialog(scope.row)">计算相似内规</el-button>
+                    <el-button @click="viewOuterRule(scope.row)">查看</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
           </el-col>
           <el-col :span="8">
             <div class="content-container">
               <div v-if="detailedExVisible === false">点击“查看”显示外规内容</div>
               <div v-if="detailedExVisible === true" class="info-container">
                 <div class="info-item">
-                  <span>ID:</span>
+                  <span>ID：</span>
                   <span>{{ detailedExReg.id }}</span>
                 </div>
                 <div class="info-item">
-                  <span>标题:</span>
+                  <span>标题：</span>
                   <span>{{ detailedExReg.title }}</span>
                 </div>
                 <div class="info-item">
-                  <span>内容:</span>
+                  <span>内容：</span>
                   <span>{{ detailedExReg.content }}</span>
                 </div>
               </div>
@@ -44,35 +45,37 @@
       <el-tab-pane label="内规" name="innerRules">
         <el-row>
           <el-col :span="16">
-            <el-table :data="innerRulesData" style="width: 100%" stripe>
-              <el-table-column prop="id" label="ID"></el-table-column>
-              <el-table-column prop="title" label="内规标题"></el-table-column>
-              <el-table-column prop="department" label="部门"></el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-button @click="viewInnerRule(scope.row)">查看</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <div class="content-container">
+              <el-table :data="innerRulesData" style="width: 100%" stripe>
+                <el-table-column prop="id" label="ID" min-width="10%"></el-table-column>
+                <el-table-column prop="title" label="内规标题" min-width="60%"></el-table-column>
+                <el-table-column prop="department" label="部门" min-width="25%"></el-table-column>
+                <el-table-column label="操作" min-width="15%">
+                  <template slot-scope="scope">
+                    <el-button @click="viewInnerRule(scope.row)">查看</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
           </el-col>
           <el-col :span="8">
             <div class="content-container">
               <div v-if="detailedInVisible === false">点击“查看”显示内规内容</div>
               <div v-if="detailedInVisible === true" class="info-container">
                 <div class="info-item">
-                  <span>ID:</span>
+                  <span>ID：</span>
                   <span>{{ detailedInReg.id }}</span>
                 </div>
                 <div class="info-item">
-                  <span>标题:</span>
+                  <span>标题：</span>
                   <span>{{ detailedInReg.title }}</span>
                 </div>
                 <div class="info-item">
-                  <span>部门:</span>
+                  <span>部门：</span>
                   <span>{{ detailedInReg.department }}</span>
                 </div>
                 <div class="info-item">
-                  <span>内容:</span>
+                  <span>内容：</span>
                   <span>{{ detailedInReg.content }}</span>
                 </div>
               </div>
@@ -100,8 +103,9 @@
 
 <script>
 
-import SimilarRulesDialog from "./commpoents/SimilarRulesDialog.vue";
-import MetricsResultDialog from "./commpoents/MetricsResultDialog.vue"; // 请根据实际路径调整
+import SimilarRulesDialog from "./components/SimilarRulesDialog.vue";
+import MetricsResultDialog from "./components/MetricsResultDialog.vue"; // 请根据实际路径调整
+import { getAllExternal, getAllInternal, getExternalById, getInternalById, getSimilarityById} from "@/network/main";
 
 export default {
   components: {MetricsResultDialog, SimilarRulesDialog},
@@ -118,7 +122,7 @@ export default {
         { id: 2, title: '内规标题2', department: '部门B' },
         // Add more data as needed
       ],
-      selectedIds: [], // 数组实时记录选中行的id
+      // selectedIds: [], // 数组实时记录选中行的id
       detailedExReg: {
         id: 0,
         title: "test",
@@ -138,24 +142,35 @@ export default {
       selectedRow: null,
       // 模拟计算结果数据
       calculationResults: {
-        apResults: [
-          { id: 1, title: '外规标题1', ap: 0.85 },
-          { id: 2, title: '外规标题2', ap: 0.92 },
-          // Add more data as needed
-        ],
+        // apResults: [
+        //   { id: 1, title: '外规标题1', ap: 0.85 },
+        //   { id: 2, title: '外规标题2', ap: 0.92 },
+        //   // Add more data as needed
+        // ],
         apOverallResult: 0.89,
         mapOverallResult: 0.78,
       },
     };
   },
+  async mounted() {
+    await getAllExternal({ params: { state: 'SUCCESS' } }).then(_res => {
+      // console.log(_res.data)
+      this.outerRulesData = _res.data;
+    });
+    await getAllInternal({ params: { state: 'SUCCESS' } }).then(_res => {
+      // console.log(_res.data)
+      this.innerRulesData = _res.data;
+    });
+  },
   methods: {
     calculateMetrics() {
       // 模拟计算指标的逻辑
-      console.log('计算选中外规的评估指标', this.selectedIds);
+      console.log('计算评估指标', this.selectedIds);
       // 在真实情况下，您需要在这里进行实际的计算逻辑，并更新 this.calculationResults
       this.dialogVisible2 = true;
     },
     handleSelectionChange(selection) {
+      //弃用
       // 当选中行发生变化时更新 selectedIds 数组
       this.selectedIds = selection.map(item => item.id);
     },
@@ -170,11 +185,30 @@ export default {
       this.dialogVisible2 = value;
     },
     viewOuterRule(row) {
-      console.log('查看外规', row);
+      // console.log('查看外规', row);
+      // console.log(row.id)
+      let config = {
+        params: {
+          id: row.id
+        }
+      }
+      getExternalById(config).then(_res => {
+        // console.log(_res.data)
+        this.detailedExReg = _res.data;
+      });
       this.detailedExVisible = true;
     },
     viewInnerRule(row) {
-      console.log('查看内规', row);
+      // console.log('查看内规', row);
+      let config = {
+        params: {
+          id: row.id
+        }
+      }
+      getInternalById(config).then(_res => {
+        // console.log(_res.data)
+        this.detailedInReg = _res.data;
+      });
       this.detailedInVisible = true;
     },
   },
@@ -183,8 +217,15 @@ export default {
 
 <style scoped>
 .content-container {
-  height: 100%;
+  height: 590px;
   padding: 20px;
   border-left: 1px solid #ebeef5;
+  overflow:auto;
+}
+.info-item span:first-child {
+  font-weight: bold;
+}
+.info-container .info-item:last-child span:last-child {
+  display: block;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div style="height:100vh">
+  <div style="height:0">
     <!-- 添加计算按钮 -->
     <el-button type="primary" @click="calculateMetrics">计算评估指标</el-button>
     <el-tabs v-model="activeTab" stretch=stretch >
@@ -217,7 +217,7 @@ export default {
 
 <style scoped>
 .content-container {
-  height: 590px;
+  height: calc(100vh - 142px);
   padding: 20px;
   border-left: 1px solid #ebeef5;
   overflow:auto;

@@ -2,7 +2,7 @@
   <div style="height:100vh">
     <!-- 添加计算按钮 -->
     <el-button type="primary" @click="calculateMetrics">计算评估指标</el-button>
-    <el-tabs v-model="activeTab">
+    <el-tabs v-model="activeTab" stretch="true" >
       <el-tab-pane label="外规" name="outerRules">
         <el-row>
           <el-col :span="16">

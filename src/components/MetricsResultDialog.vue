@@ -56,16 +56,16 @@ export default {
       this.$emit('update:dialogVisible', value);
     },
 
-    updateData() {
+    async updateData() {
       // 根据选中的行更新相似度数据
       // 示例：根据 selectedRow 进行计算并更新 this.manualAnnotationData 和 this.vsmResultsData
       // console.log(1)
-      getAP().then(_res => {
+      await getAP().then(_res => {
         // console.log(_res.data)
         this.calculationResults.apOverallResult = _res.data;
       });
-      getMAP().then(_res => {
-        // console.log(_res.data)
+      await getMAP().then(_res => {
+        console.log("map" + _res.data)
         this.calculationResults.mapOverallResult = _res.data;
       });
     },
